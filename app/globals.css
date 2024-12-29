@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 255 255 255;
+  --foreground: 23 23 23;
+}
+
+[data-theme="dark"] {
+  --background: 10 10 10;
+  --foreground: 237 237 237;
+}
+
+body {
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
+
+.dark {
+  color-scheme: dark;
+}
