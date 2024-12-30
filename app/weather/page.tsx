@@ -10,10 +10,6 @@ interface WeatherData {
   temperature: string
 }
 
-interface WeatherResponse {
-  weatherData: WeatherData[]
-}
-
 const WeatherPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [weatherData, setWeatherData] = useState<WeatherData[]>([])

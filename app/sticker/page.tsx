@@ -23,7 +23,6 @@ export default function StickerPage() {
   const [error, setError] = useState("")
   const [page, setPage] = useState(1)
   const [selectedSticker, setSelectedSticker] = useState<string[]>([])
-  const [isDetailLoading, setIsDetailLoading] = useState(false)
 
   const handleSearch = async (resetPage = true) => {
     if (!query.trim()) return
@@ -51,7 +50,6 @@ export default function StickerPage() {
   }
 
   const handleStickerClick = async (link: string) => {
-    setIsDetailLoading(true)
     setError("")
     
     try {
@@ -63,8 +61,6 @@ export default function StickerPage() {
       setSelectedSticker(data.sticker)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan')
-    } finally {
-      setIsDetailLoading(false)
     }
   }
 

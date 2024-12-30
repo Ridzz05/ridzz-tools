@@ -61,7 +61,7 @@ export default function ChatInput({
       }`}
       style={{
         transform: isKeyboardVisible 
-          ? `translateY(-${window.visualViewport?.height! - window.visualViewport?.offsetTop!}px)` 
+          ? `translateY(-${window.visualViewport?.height ?? 0}px)` 
           : 'none'
       }}
     >

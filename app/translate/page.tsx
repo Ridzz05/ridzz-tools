@@ -7,8 +7,7 @@ import {
   Button,
   Textarea,
   Select,
-  SelectItem,
-  Spinner
+  SelectItem
 } from "@nextui-org/react"
 
 const languages = [

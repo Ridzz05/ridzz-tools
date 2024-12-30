@@ -63,24 +63,6 @@ const WeatherIcon = () => (
   </svg>
 )
 
-// Tambahkan icon untuk Optimize
-const OptimizeIcon = () => (
-  <svg 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <path d="M4.75 16.25v-8.5a2 2 0 0 1 2-2h10.5a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2H6.75a2 2 0 0 1-2-2Z" />
-    <path d="m4.75 15.25 4-4 4 4 2-2 4 4" />
-    <circle cx="17" cy="8" r="1.25" />
-  </svg>
-)
-
 // Tambahkan SymbolIcon
 const SymbolIcon = () => (
   <svg 
@@ -296,23 +278,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               >
                 <WeatherIcon />
                 <span>Cuaca</span>
-              </Button>
-
-              {/* Di dalam Tools Section, tambahkan button Optimize sebelum Weather button */}
-              <Button
-                variant="flat"
-                className={`w-full justify-start gap-2 ${
-                  pathname === '/optimize'
-                    ? 'bg-primary-500/20 hover:bg-primary-500/30 text-primary'
-                    : 'bg-default-100 hover:bg-default-200'
-                }`}
-                onClick={() => {
-                  router.push('/optimize')
-                  onClose()
-                }}
-              >
-                <OptimizeIcon />
-                <span>Optimasi Gambar</span>
               </Button>
 
               {/* Di dalam Tools Section, tambahkan button Symbols sebelum Weather button */}
