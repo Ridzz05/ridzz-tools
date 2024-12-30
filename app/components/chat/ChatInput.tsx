@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button, Textarea } from '@nextui-org/react'
 import { SendIcon } from './Icons'
 import dynamic from 'next/dynamic'
@@ -25,24 +25,6 @@ export default function ChatInput({
   onModelChange 
 }: ChatInputProps) {
   const [input, setInput] = useState('')
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
-
-  useEffect(() => {
-    // Deteksi ketika keyboard muncul/hilang
-    const handleResize = () => {
-      const isKeyboard = window.visualViewport?.height && window.innerHeight
-      setIsKeyboardVisible(!!isKeyboard)
-    }
-
-    // Tambahkan event listener untuk visualViewport
-    window.visualViewport?.addEventListener('resize', handleResize)
-    window.visualViewport?.addEventListener('scroll', handleResize)
-
-    return () => {
-      window.visualViewport?.removeEventListener('resize', handleResize)
-      window.visualViewport?.removeEventListener('scroll', handleResize)
-    }
-  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,18 +35,7 @@ export default function ChatInput({
   }
 
   return (
-    <div 
-      className={`space-y-4 ${
-        isKeyboardVisible 
-          ? 'fixed bottom-0 left-0 right-0 bg-background p-4' 
-          : ''
-      }`}
-      style={{
-        transform: isKeyboardVisible 
-          ? `translateY(-${window.visualViewport?.height ?? 0}px)` 
-          : 'none'
-      }}
-    >
+    <div className="space-y-4 sticky bottom-0 left-0 right-0 bg-background p-4">
       <div className="w-full">
         <ModelSelector 
           selectedModel={selectedModel}
@@ -88,8 +59,14 @@ export default function ChatInput({
               handleSubmit(e)
             }
           }}
+          enterKeyHint="send"
           classNames={{
-            input: "bg-transparent text-foreground",
+            input: [
+              "bg-transparent",
+              "text-foreground",
+              "resize-none",
+              "overflow-auto"
+            ],
             inputWrapper: [
               "bg-default-100",
               "dark:bg-default-50",

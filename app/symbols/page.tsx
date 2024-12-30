@@ -6,7 +6,10 @@ import {
   CardBody,
   Button,
   Spinner,
+  Tooltip,
+  Divider
 } from "@nextui-org/react"
+import { SymbolIcon, CopyIcon, CheckIcon } from '../components/icons/SymbolIcons'
 
 export default function SymbolsPage() {
   const [symbols, setSymbols] = useState<string[]>([])
@@ -39,43 +42,80 @@ export default function SymbolsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-default-50">
-        <CardBody>
-          <p className="text-sm text-foreground/70">
-            Klik simbol untuk menyalin ke clipboard.
-          </p>
+    <div className="max-w-7xl mx-auto space-y-6">
+      {/* Header Card */}
+      <Card className="bg-gradient-to-r from-secondary-100 to-secondary-50">
+        <CardBody className="p-6">
+          <div className="flex items-center gap-3">
+            <SymbolIcon className="text-2xl text-secondary-600" />
+            <div>
+              <h1 className="text-xl font-bold text-secondary-900">Simbol Spesial</h1>
+              <p className="text-sm text-secondary-700">
+                Koleksi simbol untuk kebutuhan teks Anda
+              </p>
+            </div>
+          </div>
         </CardBody>
       </Card>
 
-      <Card>
-        <CardBody>
+      {/* Info Card */}
+      <Card className="bg-default-50 shadow-sm">
+        <CardBody className="p-4">
+          <div className="flex items-center gap-2 text-default-600">
+            <CopyIcon className="text-lg" />
+            <p className="text-sm">
+              Klik simbol untuk menyalin ke clipboard
+            </p>
+          </div>
+        </CardBody>
+      </Card>
+
+      {/* Symbols Grid Card */}
+      <Card className="shadow-lg">
+        <CardBody className="p-6">
           {isLoading ? (
-            <div className="flex justify-center p-4">
-              <Spinner color="secondary" />
+            <div className="flex flex-col items-center justify-center py-12 gap-4">
+              <Spinner 
+                color="secondary"
+                size="lg"
+                classNames={{
+                  circle1: "border-b-secondary-500",
+                  circle2: "border-b-secondary-500"
+                }}
+              />
+              <p className="text-default-600">Memuat simbol...</p>
             </div>
           ) : error ? (
-            <p className="text-danger text-sm">{error}</p>
+            <div className="p-4 bg-danger-50 text-danger-600 rounded-lg flex items-center gap-2">
+              <span>⚠️</span>
+              <p className="text-sm">{error}</p>
+            </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
               {symbols.map((symbol, index) => (
-                <Button
+                <Tooltip 
                   key={index}
-                  variant="flat"
-                  className="h-16 text-2xl relative overflow-hidden group"
-                  onClick={() => handleCopy(symbol)}
+                  content="Klik untuk menyalin"
+                  delay={500}
+                  closeDelay={0}
                 >
-                  {symbol}
-                  {copied === symbol && (
-                    <div 
-                      className="absolute inset-0 flex items-center justify-center bg-secondary/90 
-                        text-white text-sm font-medium
-                        animate-fade-up animate-duration-300"
-                    >
-                      Tersalin!
-                    </div>
-                  )}
-                </Button>
+                  <Button
+                    variant="flat"
+                    className={`h-16 text-2xl relative overflow-hidden group transition-all duration-300
+                      ${copied === symbol ? 'bg-secondary-100' : 'hover:bg-default-100'}`}
+                    onClick={() => handleCopy(symbol)}
+                  >
+                    <span className={copied === symbol ? 'opacity-50' : ''}>
+                      {symbol}
+                    </span>
+                    {copied === symbol && (
+                      <div className="absolute inset-0 flex items-center justify-center gap-2 bg-secondary/90 text-white text-sm font-medium animate-fade-up animate-duration-300">
+                        <CheckIcon className="text-lg" />
+                        <span>Tersalin!</span>
+                      </div>
+                    )}
+                  </Button>
+                </Tooltip>
               ))}
             </div>
           )}

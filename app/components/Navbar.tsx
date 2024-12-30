@@ -104,17 +104,15 @@ export default function NavbarComponent() {
               viewBox="0 0 24 24" 
               fill="none" 
               stroke="currentColor" 
-              strokeWidth="2"
+              strokeWidth="2" 
               strokeLinecap="round" 
               strokeLinejoin="round"
             >
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
+              <path d="M9 18l6-6-6-6"/>
             </svg>
           </Button>
           <p className="font-bold text-2xl text-white px-4 py-1 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:scale-105 transition-transform duration-300 cursor-pointer">
-            K.A Chat
+            K.A Tools
           </p>
         </NavbarBrand>
 

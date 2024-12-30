@@ -39,3 +39,22 @@ body {
 .animate-duration-300 {
   animation-duration: 300ms;
 }
+
+/* Handling mobile viewport */
+@media screen and (max-width: 768px) {
+  html {
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Prevent content shift when keyboard appears */
+.chat-container {
+  height: 100dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}

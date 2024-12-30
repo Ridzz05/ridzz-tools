@@ -29,6 +29,8 @@ export default function Message({ content, role }: MessageProps) {
       .replace(/`(.*?)`/g, '<code class="bg-default-100 px-1 py-0.5 rounded">$1</code>')
       // Strikethrough
       .replace(/~~(.*?)~~/g, '<del>$1</del>')
+      // Heading (###)
+      .replace(/###\s*(.*?)\n/g, '<h3 class="text-lg font-semibold mb-2">$1</h3>')
       // Line break
       .replace(/\n/g, '<br>')
   }
@@ -100,7 +102,7 @@ export default function Message({ content, role }: MessageProps) {
           }
         `}
       >
-        <p 
+        <div 
           className={`
             ${role === 'user'
               ? 'text-primary-700 dark:text-primary-300'

@@ -1,7 +1,14 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Input, Card, CardBody, Spinner } from "@nextui-org/react"
+import dynamic from 'next/dynamic'
+
+// Lazy load komponen Card
+const WeatherCard = dynamic(() => import('./WeatherCard'), {
+  loading: () => <Spinner size="lg" />,
+  ssr: false
+})
 
 interface WeatherData {
   city: string
@@ -16,7 +23,8 @@ const WeatherPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
 
-  const fetchWeather = async (city?: string) => {
+  // Memoize fetch function
+  const fetchWeather = useMemo(() => async (city?: string) => {
     try {
       setIsLoading(true)
       setError("")
@@ -25,7 +33,17 @@ const WeatherPage = () => {
         ? `/api/weather?city=${encodeURIComponent(city)}`
         : '/api/weather'
       
-      const response = await fetch(url)
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 detik timeout
+      
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'Cache-Control': 'max-age=1800' // Cache selama 30 menit
+        }
+      })
+      
+      clearTimeout(timeoutId)
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -39,15 +57,22 @@ const WeatherPage = () => {
         throw new Error('Format data tidak valid')
       }
     } catch (err) {
-      console.error('Error fetching weather:', err)
-      setError(err instanceof Error ? err.message : "Gagal memuat data cuaca")
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          setError('Permintaan timeout, coba lagi')
+        } else {
+          setError(err.message)
+        }
+      } else {
+        setError("Gagal memuat data cuaca")
+      }
       setWeatherData([])
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  // Debounce search
+  // Debounce search dengan cleanup
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchQuery) {
@@ -55,18 +80,29 @@ const WeatherPage = () => {
       } else {
         fetchWeather()
       }
-    }, 500) // Delay 500ms
+    }, 500)
 
     return () => clearTimeout(timer)
-  }, [searchQuery])
+  }, [searchQuery, fetchWeather])
 
-  // Initial fetch
+  // Initial fetch dengan cleanup
   useEffect(() => {
-    fetchWeather()
-    // Refresh data setiap 30 menit
-    const interval = setInterval(() => fetchWeather(), 1800000)
-    return () => clearInterval(interval)
-  }, [])
+    let mounted = true
+
+    const initialFetch = async () => {
+      if (mounted) {
+        await fetchWeather()
+      }
+    }
+
+    initialFetch()
+    const interval = setInterval(() => mounted && fetchWeather(), 1800000)
+
+    return () => {
+      mounted = false
+      clearInterval(interval)
+    }
+  }, [fetchWeather])
 
   return (
     <div className="space-y-4">
@@ -112,24 +148,10 @@ const WeatherPage = () => {
       ) : weatherData.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {weatherData.map((weather, index) => (
-            <Card 
+            <WeatherCard 
               key={`${weather.city}-${index}`}
-              className="bg-default-50/50 backdrop-blur-xl border border-divider"
-            >
-              <CardBody>
-                <div className="flex flex-col gap-3">
-                  <h3 className="text-lg font-semibold">{weather.city}</h3>
-                  <p className="text-foreground/80 text-sm">{weather.time}</p>
-                  
-                  <div className="flex items-baseline gap-1">
-                    <p className="text-3xl font-bold">{weather.temperature}</p>
-                    <span className="text-xl">°C</span>
-                  </div>
-                  
-                  <p className="text-foreground/90">{weather.weatherIcon}</p>
-                </div>
-              </CardBody>
-            </Card>
+              weather={weather}
+            />
           ))}
         </div>
       ) : (
