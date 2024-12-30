@@ -30,7 +30,7 @@ export default function ChatInput({
   useEffect(() => {
     // Deteksi ketika keyboard muncul/hilang
     const handleResize = () => {
-      const isKeyboard = window.visualViewport?.height! < window.innerHeight
+      const isKeyboard = window.visualViewport?.height && window.innerHeight
       setIsKeyboardVisible(!!isKeyboard)
     }
 

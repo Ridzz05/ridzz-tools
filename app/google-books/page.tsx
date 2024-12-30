@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Input, Button, Card, CardBody, Image } from "@nextui-org/react"
-import NavbarComponent from '../components/Navbar'
 
 // Tambahkan SearchIcon component
 const SearchIcon = () => (
