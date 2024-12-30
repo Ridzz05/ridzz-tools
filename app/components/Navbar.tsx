@@ -19,6 +19,29 @@ import {
 } from "@nextui-org/react"
 import { useState } from "react"
 import { GithubIcon, InstagramIcon, PortfolioIcon } from "./chat/Icons"
+import Sidebar from "./Sidebar"
+
+const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => {
+  return (
+    <div className="relative w-6 h-6 flex items-center justify-center">
+      <span 
+        className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+          isOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'
+        }`} 
+      />
+      <span 
+        className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+          isOpen ? 'opacity-0' : 'opacity-100'
+        }`}
+      />
+      <span 
+        className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+          isOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'
+        }`}
+      />
+    </div>
+  )
+}
 
 export default function NavbarComponent() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -28,6 +51,8 @@ export default function NavbarComponent() {
     link: '',
     icon: null as React.ReactNode
   })
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const handleModalOpen = (type: string) => {
     switch(type) {
@@ -35,7 +60,7 @@ export default function NavbarComponent() {
         setModalContent({
           title: 'GitHub',
           content: 'Kunjungi GitHub saya untuk melihat project-project lainnya',
-          link: 'https://github.com/yourusername',
+          link: 'https://github.com/Ridzz05',
           icon: <GithubIcon />
         })
         break
@@ -43,7 +68,7 @@ export default function NavbarComponent() {
         setModalContent({
           title: 'Instagram',
           content: 'Follow Instagram saya untuk update terbaru',
-          link: 'https://instagram.com/yourusername',
+          link: 'https://instagram.com/ezpzlemonsquizy',
           icon: <InstagramIcon />
         })
         break
@@ -51,7 +76,7 @@ export default function NavbarComponent() {
         setModalContent({
           title: 'Portfolio',
           content: 'Lihat portfolio lengkap saya',
-          link: 'https://yourportfolio.com',
+          link: 'https://portofolio-lake-omega.vercel.app/',
           icon: <PortfolioIcon />
         })
         break
@@ -61,32 +86,66 @@ export default function NavbarComponent() {
 
   return (
     <>
-      <Navbar className="bg-background/70 backdrop-blur-lg shadow-[0_2px_10px_rgba(0,0,0,0.2)] after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-foreground/20 after:to-transparent">
-        <NavbarBrand>
-          <p className="font-bold text-xl bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent animate-gradient bg-300% hover:animate-pulse transition-all duration-300">
+      <Navbar 
+        className="bg-background/60 backdrop-blur-xl border-b border-default-100/50 dark:border-default-50/50"
+        maxWidth="full"
+        position="sticky"
+      >
+        <NavbarBrand className="gap-4">
+          <Button
+            variant="light"
+            isIconOnly
+            onClick={() => setIsSidebarOpen(true)}
+            className="bg-default-100 dark:bg-default-50"
+          >
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2"
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </Button>
+          <p className="font-bold text-2xl text-white px-4 py-1 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:scale-105 transition-transform duration-300 cursor-pointer">
             K.A Chat
           </p>
         </NavbarBrand>
 
-        <NavbarContent justify="end">
-          <Dropdown>
+        <NavbarContent justify="end" className="gap-4">
+          <Dropdown onOpenChange={setIsMenuOpen}>
             <DropdownTrigger>
               <Button 
                 variant="light"
-                className="font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent animate-gradient bg-300% hover:animate-pulse transition-all duration-300 shadow-[2px_2px_0px_rgba(0,0,0,0.15)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                isIconOnly
+                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 transition-all duration-300 p-0"
               >
-                Social Links
+                <HamburgerIcon isOpen={isMenuOpen} />
               </Button>
             </DropdownTrigger>
             <DropdownMenu 
               aria-label="Social Links"
-              className="bg-background/95 backdrop-blur-md"
+              className="bg-background/95 backdrop-blur-xl"
+              itemClasses={{
+                base: [
+                  "rounded-lg",
+                  "transition-all",
+                  "duration-300",
+                  "data-[hover=true]:bg-default-100/80",
+                  "data-[hover=true]:translate-x-1",
+                ]
+              }}
             >
               <DropdownItem
                 key="github"
                 onClick={() => handleModalOpen('github')}
                 startContent={<span className="text-foreground"><GithubIcon /></span>}
-                className="text-foreground hover:bg-default-100 dark:hover:bg-default-50 transition-colors"
               >
                 GitHub
               </DropdownItem>
@@ -94,7 +153,6 @@ export default function NavbarComponent() {
                 key="instagram"
                 onClick={() => handleModalOpen('instagram')}
                 startContent={<span className="text-foreground"><InstagramIcon /></span>}
-                className="text-foreground hover:bg-default-100 dark:hover:bg-default-50 transition-colors"
               >
                 Instagram
               </DropdownItem>
@@ -102,7 +160,6 @@ export default function NavbarComponent() {
                 key="portfolio"
                 onClick={() => handleModalOpen('portfolio')}
                 startContent={<span className="text-foreground"><PortfolioIcon /></span>}
-                className="text-foreground hover:bg-default-100 dark:hover:bg-default-50 transition-colors"
               >
                 Portfolio
               </DropdownItem>
@@ -111,33 +168,62 @@ export default function NavbarComponent() {
         </NavbarContent>
       </Navbar>
 
+      <Sidebar 
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
       <Modal 
         isOpen={isOpen} 
         onClose={onClose}
         backdrop="blur"
         classNames={{
-          backdrop: "bg-white/10 backdrop-blur-md",
-          base: "bg-background/80 dark:bg-default-100/80 backdrop-blur-md",
-          closeButton: "hover:bg-default-100",
+          backdrop: "bg-default-100/10 backdrop-blur-md",
+          base: "border border-default-100 bg-background/80 dark:bg-default-100/80 backdrop-blur-md",
+          header: "border-b border-default-100/50",
+          footer: "border-t border-default-100/50",
+          closeButton: "hover:bg-default-100/80 active:bg-default-200/80",
+        }}
+        motionProps={{
+          variants: {
+            enter: {
+              y: 0,
+              opacity: 1,
+              transition: {
+                duration: 0.3,
+                ease: "easeOut"
+              }
+            },
+            exit: {
+              y: -20,
+              opacity: 0,
+              transition: {
+                duration: 0.2,
+                ease: "easeIn"
+              }
+            }
+          }
         }}
       >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-foreground">
-                  <span className="text-foreground">{modalContent.icon}</span>
-                  {modalContent.title}
+                <div className="flex items-center gap-3 text-foreground">
+                  <span className="text-foreground p-2 bg-default-100/50 rounded-lg">
+                    {modalContent.icon}
+                  </span>
+                  <span className="font-medium">{modalContent.title}</span>
                 </div>
               </ModalHeader>
               <ModalBody>
-                <p className="text-foreground">{modalContent.content}</p>
+                <p className="text-foreground/80">{modalContent.content}</p>
               </ModalBody>
               <ModalFooter>
                 <Button 
                   variant="light" 
                   onPress={onClose}
-                  className="bg-danger-500/20 hover:bg-danger-500/30 text-danger transition-all duration-300"
+                  className="bg-danger-500/20 hover:bg-danger-500/30 text-danger font-medium transition-all duration-300"
                 >
                   Tutup
                 </Button>
@@ -146,7 +232,7 @@ export default function NavbarComponent() {
                   as={Link} 
                   href={modalContent.link} 
                   target="_blank"
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 transition-all duration-300"
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 text-white font-medium hover:opacity-90 transition-all duration-300"
                 >
                   Kunjungi
                 </Button>

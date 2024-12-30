@@ -62,17 +62,20 @@ export default function ModelSelector({ selectedModel, onModelChange }: ModelSel
         innerWrapper: "border-0",
         base: "border-0",
         mainWrapper: "h-unit-10",
-        popover: [
-          "bg-default-100",
-          "dark:bg-default-50",
-          "shadow-[2px_2px_0px_rgba(0,0,0,0.15)]",
-          "w-[250px]"
-        ],
+        listboxWrapper: "p-0",
         listbox: [
           "p-0",
-          "gap-0"
+          "gap-0",
+          "bg-default-100",
+          "dark:bg-default-50",
+          "shadow-[2px_2px_0px_rgba(0,0,0,0.15)]"
         ],
-        listboxWrapper: "p-0",
+        popoverContent: [
+          "w-[250px]",
+          "bg-default-100",
+          "dark:bg-default-50",
+          "shadow-[2px_2px_0px_rgba(0,0,0,0.15)]"
+        ],
         selectorIcon: "text-foreground"
       }}
       renderValue={() => (

@@ -4,7 +4,6 @@ import { useState } from 'react'
 import ChatHistory from './components/chat/ChatHistory'
 import ChatInput from './components/chat/ChatInput'
 import NavbarComponent from './components/Navbar'
-import Footer from './components/Footer'
 
 interface Message {
   id: string
@@ -76,7 +75,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   )
 }

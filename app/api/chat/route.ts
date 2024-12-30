@@ -17,10 +17,37 @@ type AvailableModel =
 
 const DEFAULT_MODEL: AvailableModel = "claude-3-sonnet-20240229"
 
+// Tambahkan tipe untuk respons Gemini
+type GeminiResponse = {
+  answer: string
+}
+
 export async function POST(request: Request) {
   try {
     const { message, model = DEFAULT_MODEL } = await request.json()
 
+    // Tambahkan logika untuk Gemini
+    if (model.includes('gemini')) {
+      const geminiResponse = await fetch('https://api.i-as.dev/api/ai/gemini/text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: message,
+          apiKey: process.env.GEMINI_API_KEY // Pastikan menambahkan ini di .env
+        })
+      })
+
+      if (!geminiResponse.ok) {
+        throw new Error(`Gemini API returned status: ${geminiResponse.status}`)
+      }
+
+      const data: GeminiResponse = await geminiResponse.json()
+      return NextResponse.json({ message: data.answer })
+    }
+
+    // Logika existing untuk model lain
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {

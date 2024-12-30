@@ -16,13 +16,29 @@ export default function Message({ content, role }: MessageProps) {
   const [isTyping, setIsTyping] = useState(false)
   const previousContent = useRef('')
 
+  // Fungsi untuk memformat teks
+  const formatText = (text: string) => {
+    return text
+      // Bold
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Italic
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      // Underline
+      .replace(/__(.*?)__/g, '<u>$1</u>')
+      // Code
+      .replace(/`(.*?)`/g, '<code class="bg-default-100 px-1 py-0.5 rounded">$1</code>')
+      // Strikethrough
+      .replace(/~~(.*?)~~/g, '<del>$1</del>')
+      // Line break
+      .replace(/\n/g, '<br>')
+  }
+
   useEffect(() => {
     if (!content) return
     
     if (role === 'assistant') {
       setIsTyping(true)
       
-      // Jika ada konten sebelumnya, tambahkan ke displayed content
       if (previousContent.current && content.startsWith(previousContent.current)) {
         setDisplayedContent(previousContent.current)
         const newContent = content.slice(previousContent.current.length)
@@ -30,35 +46,33 @@ export default function Message({ content, role }: MessageProps) {
         
         const interval = setInterval(() => {
           if (index <= newContent.length) {
-            setDisplayedContent(previousContent.current + newContent.slice(0, index))
+            setDisplayedContent(formatText(previousContent.current + newContent.slice(0, index)))
             index++
           } else {
             clearInterval(interval)
             setIsTyping(false)
           }
-        }, 15) // Dipercepat menjadi 15ms
+        }, 15)
 
         return () => clearInterval(interval)
       } else {
-        // Jika konten baru, mulai dari awal
         let index = 0
         const interval = setInterval(() => {
           if (index <= content.length) {
-            setDisplayedContent(content.slice(0, index))
+            setDisplayedContent(formatText(content.slice(0, index)))
             index++
           } else {
             clearInterval(interval)
             setIsTyping(false)
           }
-        }, 15) // Dipercepat menjadi 15ms
+        }, 15)
 
         return () => clearInterval(interval)
       }
     } else {
-      setDisplayedContent(content)
+      setDisplayedContent(formatText(content))
     }
 
-    // Update previous content
     previousContent.current = content
   }, [content, role])
 
@@ -86,15 +100,16 @@ export default function Message({ content, role }: MessageProps) {
           }
         `}
       >
-        <p className={`
-          ${role === 'user'
-            ? 'text-primary-700 dark:text-primary-300'
-            : 'text-foreground dark:text-foreground'
-          }
-          ${isTyping ? 'after:content-["|"] after:animate-blink after:ml-[1px] after:text-foreground dark:after:text-foreground' : ''}
-        `}>
-          {displayedContent}
-        </p>
+        <p 
+          className={`
+            ${role === 'user'
+              ? 'text-primary-700 dark:text-primary-300'
+              : 'text-foreground dark:text-foreground'
+            }
+            ${isTyping ? 'after:content-["|"] after:animate-blink after:ml-[1px] after:text-foreground dark:after:text-foreground' : ''}
+          `}
+          dangerouslySetInnerHTML={{ __html: displayedContent }}
+        />
       </div>
     </div>
   )
